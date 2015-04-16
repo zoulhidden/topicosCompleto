@@ -3,7 +3,7 @@ xquery version "3.0";
 module namespace ubl="urn:ubl:utils";
 
 declare function ubl:document-list() {
-    let $doc := doc( '/db/topicos/UBL-2.1.xml' )
+    let $doc := doc( '/db/Topicos/UBL-2.1.xml' )
 
 (: Obtiene la lista de documentos UBL Schema (las secciones) :)
 let $sections := $doc/article/section[3]/section[1]/section
@@ -19,7 +19,7 @@ for $id in $sections
         </doc-name>
     </document>
 };
-
+(: Funcion encargada de listar los procesos de UBL :)
 declare function ubl:process-list(){
     let $list := ubl:document-list()
 
@@ -34,6 +34,11 @@ declare function ubl:docs-for-process($doc-list, $process-name){
     $doc-list[process//* = $process-name]/doc-name
 };
 
+declare function ubl:capitalize($string as xs:string)as xs:string{
+    let $tokens:= for $codepoint in string-to-codepoints($string) return codepoints-to-string($codepoint)
+    return concat(upper-case($tokens[1]),string-join(subsequence($tokens, 2), ''))
+};
+
 declare function ubl:fix-name($name){
-    concat("UBL-", replace($name, " ", "-"), "-2.1")    
+    concat("UBL-", replace($name, " ", "-"),"-2.1")
 };
